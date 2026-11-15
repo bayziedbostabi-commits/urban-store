@@ -526,7 +526,12 @@
                     <button type="button" onclick="closeProductModal()" class="w-8 h-8 rounded-full bg-neutral-100 flex items-center justify-center"><i class="ph-bold ph-x"></i></button>
                 </div>
                 <div class="p-4 space-y-4 pb-20">
-                    <img id="modal-main-img" src="" class="w-full aspect-square object-cover rounded-2xl bg-neutral-50 border" onerror="this.src='https://placehold.co/400x400/orange/white?text=Product'">
+                    <!-- Multiple Images Gallery (2-4 Pictures) -->
+                    <div class="space-y-2">
+                        <img id="modal-main-img" src="" class="w-full aspect-square object-cover rounded-2xl bg-neutral-50 border shadow-2xs" onerror="this.src='https://placehold.co/400x400/orange/white?text=Product'">
+                        <div id="modal-thumbnails-container" class="flex gap-2 overflow-x-auto no-scrollbar py-1"></div>
+                    </div>
+
                     <div class="flex items-start justify-between gap-2">
                         <div>
                             <h1 id="modal-title" class="text-sm font-bold text-neutral-900"></h1>
@@ -536,6 +541,17 @@
                             <i id="modal-wishlist-icon" class="ph ph-heart text-xl"></i>
                         </button>
                     </div>
+
+                    <!-- Quantity Selector Option -->
+                    <div class="bg-neutral-50 rounded-2xl p-3 border flex items-center justify-between">
+                        <span class="text-xs font-extrabold text-neutral-800">পরিমাণ (Quantity):</span>
+                        <div class="flex items-center gap-3">
+                            <button type="button" onclick="changeModalQty(-1)" class="w-8 h-8 rounded-full bg-white border flex items-center justify-center font-bold text-neutral-800 shadow-2xs text-sm">-</button>
+                            <span id="modal-product-qty" class="text-sm font-black text-neutral-900 w-6 text-center">1</span>
+                            <button type="button" onclick="changeModalQty(1)" class="w-8 h-8 rounded-full bg-white border flex items-center justify-center font-bold text-neutral-800 shadow-2xs text-sm">+</button>
+                        </div>
+                    </div>
+
                     <div class="bg-neutral-50 rounded-2xl p-3 border text-xs space-y-1.5">
                         <p class="font-bold text-neutral-900">পণ্যের বিবরণ (Description):</p>
                         <p id="modal-description" class="text-neutral-600 leading-relaxed"></p>
@@ -669,7 +685,7 @@
                                 <input type="number" id="adm-price" required placeholder="বিক্রয় দাম (৳)" class="bg-neutral-50 border rounded-xl px-3 py-2 text-xs">
                                 <input type="number" id="adm-oldprice" placeholder="আগের দাম (৳)" class="bg-neutral-50 border rounded-xl px-3 py-2 text-xs">
                             </div>
-                            <input type="text" id="adm-img" required placeholder="ছবির লিংক (Image URL)" class="w-full bg-neutral-50 border rounded-xl px-3 py-2 text-xs">
+                            <input type="text" id="adm-img" required placeholder="ছবির লিংকসমূহ (কমা দিয়ে ২-৪টি লিংক দিন)" class="w-full bg-neutral-50 border rounded-xl px-3 py-2 text-xs">
                             <button type="submit" id="adm-save-btn" class="w-full bg-orange-500 text-white font-bold text-xs py-2.5 rounded-xl shadow">Save Product</button>
                         </form>
                         <div class="space-y-2">
@@ -952,11 +968,47 @@
             console.warn("Firebase init offline fallback:", err.message);
         }
 
-        // Default Seed Products
+        // Default Seed Products (with multiple images)
         const DEFAULT_PRODUCTS = [
-            { id: 'seed-1', title: "K8 Type-C Wireless Microphone", price: 260, oldPrice: 699, category: "Gadgets", images: ["https://images.unsplash.com/photo-1590602847861-f357a9332bbc?auto=format&fit=crop&w=400&q=80"], description: "ইউটিউব ও ফেসবুক লাইভ ভিডিওর জন্য সেরা ওয়্যারলেস মাইক্রোফোন।", createdAt: Date.now() - 3000 },
-            { id: 'seed-2', title: "OLEVS Stainless Steel Watch", price: 241, oldPrice: 950, category: "Fashion", images: ["https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=400&q=80"], description: "স্টাইলিশ ও প্রিমিয়াম কোয়ালিটির লেডিস/জেন্টস হাতঘড়ি।", createdAt: Date.now() - 2000 },
-            { id: 'seed-3', title: "Organic Honey Pure 500g", price: 380, oldPrice: 600, category: "Groceries", images: ["https://images.unsplash.com/photo-1587049352847-4a222e784d38?auto=format&fit=crop&w=400&q=80"], description: "১০০% খাঁটি সুন্দরবনের মধু।", createdAt: Date.now() - 1000 }
+            { 
+                id: 'seed-1', 
+                title: "K8 Type-C Wireless Microphone", 
+                price: 260, 
+                oldPrice: 699, 
+                category: "Gadgets", 
+                images: [
+                    "https://images.unsplash.com/photo-1590602847861-f357a9332bbc?auto=format&fit=crop&w=400&q=80",
+                    "https://images.unsplash.com/photo-1583394838336-acd977736f90?auto=format&fit=crop&w=400&q=80",
+                    "https://images.unsplash.com/photo-1546435770-a3e426bf472b?auto=format&fit=crop&w=400&q=80"
+                ], 
+                description: "ইউটিউব ও ফেসবুক লাইভ ভিডিওর জন্য সেরা ওয়্যারলেস মাইক্রোফোন।", 
+                createdAt: Date.now() - 3000 
+            },
+            { 
+                id: 'seed-2', 
+                title: "OLEVS Stainless Steel Watch", 
+                price: 241, 
+                oldPrice: 950, 
+                category: "Fashion", 
+                images: [
+                    "https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=400&q=80",
+                    "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=400&q=80"
+                ], 
+                description: "স্টাইলিশ ও প্রিমিয়াম কোয়ালিটির লেডিস/জেন্টস হাতঘড়ি।", 
+                createdAt: Date.now() - 2000 
+            },
+            { 
+                id: 'seed-3', 
+                title: "Organic Honey Pure 500g", 
+                price: 380, 
+                oldPrice: 600, 
+                category: "Groceries", 
+                images: [
+                    "https://images.unsplash.com/photo-1587049352847-4a222e784d38?auto=format&fit=crop&w=400&q=80"
+                ], 
+                description: "১০০% খাঁটি সুন্দরবনের মধু।", 
+                createdAt: Date.now() - 1000 
+            }
         ];
 
         // Default Active Vouchers
@@ -1006,6 +1058,7 @@
         let activeTab = 'home';
         let selectedAdminThreadId = '';
         let currentModalProduct = null;
+        let currentModalQty = 1;
         let directBuyItem = null;
         let currentFeedFilter = 'All';
         let pendingAction = null;
@@ -1014,7 +1067,7 @@
 
         function persistLocal() {
             try {
-                ALL_MESSAGES = getValidMessages(); // Keep only last 24h messages
+                ALL_MESSAGES = getValidMessages();
                 localStorage.setItem('urban_products', JSON.stringify(PRODUCTS));
                 localStorage.setItem('urban_vouchers', JSON.stringify(VOUCHERS));
                 localStorage.setItem('urban_collected_vouchers', JSON.stringify(COLLECTED_VOUCHERS));
@@ -1152,7 +1205,7 @@
         };
 
         function initApp() {
-            ALL_MESSAGES = getValidMessages(); // Clean old messages on init
+            ALL_MESSAGES = getValidMessages();
             renderFlashSales();
             renderProductGrid();
             renderVouchers();
@@ -1218,13 +1271,16 @@
         function renderFlashSales() {
             const strip = document.getElementById('flash-sale-strip');
             if (!strip) return;
-            strip.innerHTML = PRODUCTS.slice(0, 6).map(p => `
-                <div onclick="openProductModal('${p.id}')" class="min-w-[110px] bg-white rounded-xl p-2 border cursor-pointer shrink-0">
-                    <img src="${(p.images && p.images[0]) || ''}" class="w-full aspect-square object-cover rounded-lg mb-1" onerror="this.src='https://placehold.co/200x200/orange/white?text=URBAN'">
-                    <p class="text-[11px] font-bold text-neutral-800 truncate">${p.title}</p>
-                    <p class="text-xs font-black text-orange-600">৳${p.price}</p>
-                </div>
-            `).join('');
+            strip.innerHTML = PRODUCTS.slice(0, 6).map(p => {
+                const imgs = (p.images && p.images.length > 0) ? p.images : [p.image || ''];
+                return `
+                    <div onclick="openProductModal('${p.id}')" class="min-w-[110px] bg-white rounded-xl p-2 border cursor-pointer shrink-0">
+                        <img src="${imgs[0]}" class="w-full aspect-square object-cover rounded-lg mb-1" onerror="this.src='https://placehold.co/200x200/orange/white?text=URBAN'">
+                        <p class="text-[11px] font-bold text-neutral-800 truncate">${p.title}</p>
+                        <p class="text-xs font-black text-orange-600">৳${p.price}</p>
+                    </div>
+                `;
+            }).join('');
         }
 
         function renderProductGrid(list = PRODUCTS) {
@@ -1232,13 +1288,14 @@
             if (!grid) return;
             grid.innerHTML = list.map(p => {
                 const isWished = WISHLIST.includes(String(p.id));
+                const imgs = (p.images && p.images.length > 0) ? p.images : [p.image || ''];
                 return `
                     <div class="bg-white rounded-2xl border p-2.5 flex flex-col justify-between shadow-2xs relative">
                         <button type="button" onclick="toggleWishlistItem(event, '${p.id}')" class="absolute top-3.5 right-3.5 z-10 w-7 h-7 rounded-full bg-white/90 shadow-xs flex items-center justify-center ${isWished ? 'text-rose-500' : 'text-neutral-400'}">
                             <i class="${isWished ? 'ph-fill' : 'ph'} ph-heart text-sm"></i>
                         </button>
                         <div onclick="openProductModal('${p.id}')" class="cursor-pointer">
-                            <img src="${(p.images && p.images[0]) || ''}" class="w-full aspect-square object-cover rounded-xl mb-2" onerror="this.src='https://placehold.co/300x300/orange/white?text=URBAN'">
+                            <img src="${imgs[0]}" class="w-full aspect-square object-cover rounded-xl mb-2" onerror="this.src='https://placehold.co/300x300/orange/white?text=URBAN'">
                             <h4 class="text-xs font-semibold text-neutral-800 line-clamp-2">${p.title}</h4>
                         </div>
                         <div class="mt-1.5 flex items-center justify-between">
@@ -1293,17 +1350,20 @@
             const wishedProducts = PRODUCTS.filter(p => WISHLIST.includes(String(p.id)));
             listEl.innerHTML = wishedProducts.length === 0
                 ? `<div class="text-center py-12 text-xs text-neutral-500">আপনার পছন্দের তালিকায় কোনো পণ্য নেই।</div>`
-                : wishedProducts.map(p => `
-                    <div class="bg-white rounded-2xl p-3 border flex items-center gap-3 shadow-2xs">
-                        <img src="${(p.images && p.images[0]) || ''}" class="w-14 h-14 object-cover rounded-xl" onerror="this.src='https://placehold.co/100x100/orange/white?text=Img'">
-                        <div class="flex-1 min-w-0">
-                            <p class="text-xs font-bold text-neutral-900 truncate">${p.title}</p>
-                            <p class="text-xs font-extrabold text-orange-600 mt-0.5">৳${p.price}</p>
+                : wishedProducts.map(p => {
+                    const imgs = (p.images && p.images.length > 0) ? p.images : [p.image || ''];
+                    return `
+                        <div class="bg-white rounded-2xl p-3 border flex items-center gap-3 shadow-2xs">
+                            <img src="${imgs[0]}" class="w-14 h-14 object-cover rounded-xl" onerror="this.src='https://placehold.co/100x100/orange/white?text=Img'">
+                            <div class="flex-1 min-w-0">
+                                <p class="text-xs font-bold text-neutral-900 truncate">${p.title}</p>
+                                <p class="text-xs font-extrabold text-orange-600 mt-0.5">৳${p.price}</p>
+                            </div>
+                            <button type="button" onclick="closeWishlistModal(); openProductModal('${p.id}')" class="bg-neutral-900 text-white text-[11px] font-bold px-3 py-1.5 rounded-xl">দেখুন</button>
+                            <button type="button" onclick="toggleWishlistItem(event, '${p.id}'); openWishlistModal();" class="text-rose-500 p-1"><i class="ph ph-trash text-base"></i></button>
                         </div>
-                        <button type="button" onclick="closeWishlistModal(); openProductModal('${p.id}')" class="bg-neutral-900 text-white text-[11px] font-bold px-3 py-1.5 rounded-xl">দেখুন</button>
-                        <button type="button" onclick="toggleWishlistItem(event, '${p.id}'); openWishlistModal();" class="text-rose-500 p-1"><i class="ph ph-trash text-base"></i></button>
-                    </div>
-                `).join('');
+                    `;
+                }).join('');
             document.getElementById('wishlist-modal').classList.remove('hidden');
         };
         window.closeWishlistModal = function() { document.getElementById('wishlist-modal').classList.add('hidden'); };
@@ -1332,15 +1392,49 @@
             const p = PRODUCTS.find(x => String(x.id) === String(id));
             if (!p) return;
             currentModalProduct = p;
+            currentModalQty = 1; // Reset quantity to 1
+            document.getElementById('modal-product-qty').textContent = currentModalQty;
+
             document.getElementById('modal-top-title').textContent = p.title;
-            document.getElementById('modal-main-img').src = (p.images && p.images[0]) || '';
             document.getElementById('modal-title').textContent = p.title;
             document.getElementById('modal-price').textContent = p.price;
             document.getElementById('modal-old-price').textContent = p.oldPrice;
             document.getElementById('modal-description').textContent = p.description || "সেরা মানের পণ্য ও দ্রুত ডেলিভারি।";
+
+            // Setup Multiple Images (Thumbnails & Main Image)
+            const imgs = (p.images && p.images.length > 0) ? p.images : (p.image ? [p.image] : ['https://placehold.co/400x400/orange/white?text=Product']);
+            document.getElementById('modal-main-img').src = imgs[0];
+
+            const thumbContainer = document.getElementById('modal-thumbnails-container');
+            if (imgs.length > 1) {
+                thumbContainer.classList.remove('hidden');
+                thumbContainer.innerHTML = imgs.map((imgUrl, idx) => `
+                    <img src="${imgUrl}" onclick="switchModalMainImage('${imgUrl}', this)" class="w-14 h-14 object-cover rounded-xl border-2 ${idx === 0 ? 'border-orange-500' : 'border-neutral-200'} cursor-pointer shrink-0 transition" onerror="this.src='https://placehold.co/100x100/orange/white?text=Img'">
+                `).join('');
+            } else {
+                thumbContainer.classList.add('hidden');
+                thumbContainer.innerHTML = '';
+            }
+
             updateModalWishlistIcon();
             document.getElementById('product-detail-modal').classList.remove('hidden');
         };
+
+        window.switchModalMainImage = function(url, thumbEl) {
+            document.getElementById('modal-main-img').src = url;
+            document.querySelectorAll('#modal-thumbnails-container img').forEach(img => {
+                img.className = "w-14 h-14 object-cover rounded-xl border-2 border-neutral-200 cursor-pointer shrink-0 transition";
+            });
+            thumbEl.className = "w-14 h-14 object-cover rounded-xl border-2 border-orange-500 cursor-pointer shrink-0 transition";
+        };
+
+        window.changeModalQty = function(delta) {
+            currentModalQty += delta;
+            if (currentModalQty < 1) currentModalQty = 1;
+            if (currentModalQty > 99) currentModalQty = 99;
+            document.getElementById('modal-product-qty').textContent = currentModalQty;
+        };
+
         window.closeProductModal = function() { document.getElementById('product-detail-modal').classList.add('hidden'); };
 
         /* ==================== VOUCHERS & DEALS ==================== */
@@ -1448,7 +1542,7 @@
         }
 
         function refreshChatUI() {
-            ALL_MESSAGES = getValidMessages(); // Filter out messages older than 24 hours
+            ALL_MESSAGES = getValidMessages();
             const adminMode = isOwnerAdmin();
             const adminBar = document.getElementById('admin-chat-bar');
             const threadSelect = document.getElementById('admin-chat-thread-select');
@@ -1651,7 +1745,6 @@
                 } catch (err) {}
             }
 
-            // Instant smart auto-reply when customer sends a message
             if (!adminMode) {
                 setTimeout(async () => {
                     const lowerText = text.toLowerCase();
@@ -1714,13 +1807,11 @@
             const email = document.getElementById('reg-email').value.trim().toLowerCase();
             const password = document.getElementById('reg-pass').value;
 
-            // Strict Gmail validation (@gmail.com required)
             if (!email.endsWith('@gmail.com')) {
                 showToast('দয়া করে সঠিক @gmail.com জিমেইল ব্যবহার করুন!');
                 return;
             }
 
-            // Strict Phone validation (Must be exactly 11 digits)
             const cleanDigits = rawPhone.replace(/\D/g, '');
             let phone11 = '';
             if (cleanDigits.length === 11 && cleanDigits.startsWith('01')) {
@@ -1904,19 +1995,21 @@
         /* ==================== CART & CHECKOUT ==================== */
         window.addCurrentProductToCart = function() {
             if (!currentModalProduct) return;
+            const qtyToAdd = currentModalQty || 1;
             const item = cart.find(x => String(x.product.id) === String(currentModalProduct.id));
-            if (item) item.qty++;
-            else cart.push({ product: currentModalProduct, qty: 1 });
+            if (item) item.qty += qtyToAdd;
+            else cart.push({ product: currentModalProduct, qty: qtyToAdd });
             persistLocal();
             updateCartUI();
-            showToast('কার্টে যোগ করা হয়েছে!');
+            showToast(`${qtyToAdd}টি পণ্য কার্টে যোগ করা হয়েছে!`);
             closeProductModal();
         };
 
         window.buyNowCurrentProduct = function() {
             if (!currentModalProduct) return;
             requireLogin(() => {
-                directBuyItem = { product: currentModalProduct, qty: 1 };
+                const qtyToBuy = currentModalQty || 1;
+                directBuyItem = { product: currentModalProduct, qty: qtyToBuy };
                 closeProductModal();
                 openCheckout([directBuyItem]);
             });
@@ -1938,16 +2031,19 @@
             } else {
                 document.getElementById('empty-cart-view').classList.add('hidden');
                 document.getElementById('cart-checkout-bar').classList.remove('hidden');
-                container.innerHTML = cart.map((i, idx) => `
-                    <div class="bg-white rounded-xl p-2.5 border flex items-center gap-3">
-                        <img src="${(i.product.images && i.product.images[0]) || ''}" class="w-14 h-14 object-cover rounded-lg" onerror="this.src='https://placehold.co/100x100/orange/white?text=Img'">
-                        <div class="flex-1">
-                            <p class="text-xs font-bold text-neutral-900">${i.product.title}</p>
-                            <p class="text-xs text-orange-600 font-extrabold mt-1">৳${i.product.price} × ${i.qty}</p>
+                container.innerHTML = cart.map((i, idx) => {
+                    const imgs = (i.product.images && i.product.images.length > 0) ? i.product.images : [i.product.image || ''];
+                    return `
+                        <div class="bg-white rounded-xl p-2.5 border flex items-center gap-3">
+                            <img src="${imgs[0]}" class="w-14 h-14 object-cover rounded-lg" onerror="this.src='https://placehold.co/100x100/orange/white?text=Img'">
+                            <div class="flex-1">
+                                <p class="text-xs font-bold text-neutral-900">${i.product.title}</p>
+                                <p class="text-xs text-orange-600 font-extrabold mt-1">৳${i.product.price} × ${i.qty} = ৳${i.product.price * i.qty}</p>
+                            </div>
+                            <button type="button" onclick="removeFromCart(${idx})" class="text-rose-500 p-1"><i class="ph ph-trash text-base"></i></button>
                         </div>
-                        <button type="button" onclick="removeFromCart(${idx})" class="text-rose-500 p-1"><i class="ph ph-trash text-base"></i></button>
-                    </div>
-                `).join('');
+                    `;
+                }).join('');
             }
         }
 
@@ -2164,7 +2260,6 @@
             const myOrders = getUserOrders();
             let list = myOrders;
 
-            // Updated step-by-step status filtering matching Admin dropdown options
             if (filter === 'Packing') {
                 list = myOrders.filter(o => ['Pending', 'Processing', 'Pending / Packing'].includes(o.status));
             } else if (filter === 'On The Way') {
@@ -2232,17 +2327,20 @@
             const description = document.getElementById('adm-desc').value;
             const price = Number(document.getElementById('adm-price').value);
             const oldPrice = Number(document.getElementById('adm-oldprice').value) || (price + 200);
-            const img = document.getElementById('adm-img').value;
+            const imgInput = document.getElementById('adm-img').value.trim();
+            
+            // Support multiple images separated by comma
+            const images = imgInput.includes(',') ? imgInput.split(',').map(s => s.trim()).filter(Boolean) : [imgInput];
 
             if (editId) {
-                const payload = { title, category, description, price, oldPrice, images: [img] };
+                const payload = { title, category, description, price, oldPrice, images };
                 if (db) { try { await updateDoc(doc(db, 'products', editId), payload); } catch (e) {} }
                 const idx = PRODUCTS.findIndex(x => String(x.id) === String(editId));
                 if (idx !== -1) PRODUCTS[idx] = { ...PRODUCTS[idx], ...payload };
                 document.getElementById('adm-edit-id').value = '';
                 showToast('পণ্য আপডেট হয়েছে!');
             } else {
-                const newP = { title, category, description, price, oldPrice, images: [img], createdAt: Date.now() };
+                const newP = { title, category, description, price, oldPrice, images, createdAt: Date.now() };
                 try {
                     if (db) {
                         const docRef = await addDoc(productsCol, newP);
@@ -2265,17 +2363,20 @@
         function renderAdminProducts() {
             const box = document.getElementById('admin-products-list');
             if (!box) return;
-            box.innerHTML = PRODUCTS.map(p => `
-                <div class="bg-white rounded-xl p-2.5 border flex items-center gap-3 text-xs">
-                    <img src="${(p.images && p.images[0]) || ''}" class="w-12 h-12 object-cover rounded-lg" onerror="this.src='https://placehold.co/100x100/orange/white?text=Img'">
-                    <div class="flex-1 truncate">
-                        <p class="font-bold text-neutral-900 truncate">${p.title}</p>
-                        <p class="text-orange-600 font-extrabold">৳${p.price} (${p.category})</p>
+            box.innerHTML = PRODUCTS.map(p => {
+                const imgs = (p.images && p.images.length > 0) ? p.images : [p.image || ''];
+                return `
+                    <div class="bg-white rounded-xl p-2.5 border flex items-center gap-3 text-xs">
+                        <img src="${imgs[0]}" class="w-12 h-12 object-cover rounded-lg" onerror="this.src='https://placehold.co/100x100/orange/white?text=Img'">
+                        <div class="flex-1 truncate">
+                            <p class="font-bold text-neutral-900 truncate">${p.title}</p>
+                            <p class="text-orange-600 font-extrabold">৳${p.price} (${p.category}) — ${imgs.length}টি ছবি</p>
+                        </div>
+                        <button type="button" onclick="editAdminProduct('${p.id}')" class="text-blue-600 p-1"><i class="ph ph-pencil text-base"></i></button>
+                        <button type="button" onclick="deleteAdminProduct('${p.id}')" class="text-rose-600 p-1"><i class="ph ph-trash text-base"></i></button>
                     </div>
-                    <button type="button" onclick="editAdminProduct('${p.id}')" class="text-blue-600 p-1"><i class="ph ph-pencil text-base"></i></button>
-                    <button type="button" onclick="deleteAdminProduct('${p.id}')" class="text-rose-600 p-1"><i class="ph ph-trash text-base"></i></button>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
         window.editAdminProduct = function(id) {
@@ -2287,7 +2388,8 @@
             document.getElementById('adm-desc').value = p.description || '';
             document.getElementById('adm-price').value = p.price;
             document.getElementById('adm-oldprice').value = p.oldPrice;
-            document.getElementById('adm-img').value = (p.images && p.images[0]) || '';
+            const imgs = (p.images && p.images.length > 0) ? p.images : (p.image ? [p.image] : ['']);
+            document.getElementById('adm-img').value = imgs.join(', ');
             document.getElementById('adm-save-btn').textContent = "Update Product";
         };
 
