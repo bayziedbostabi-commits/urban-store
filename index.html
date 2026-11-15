@@ -913,6 +913,15 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
         import { getFirestore, doc, setDoc, collection, onSnapshot, addDoc, updateDoc, deleteDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+        // ফেইল-সেফ স্প্ল্যাশ স্ক্রিন রিমুভার (ইন্টারনেট স্লো থাকলেও ১.৫ সেকেন্ডের মধ্যে নিশ্চিতভাবে সরে যাবে)
+        setTimeout(() => {
+            const splash = document.getElementById('splash-screen');
+            if (splash) {
+                splash.classList.add('opacity-0', 'pointer-events-none');
+                setTimeout(() => splash.classList.add('hidden'), 400);
+            }
+        }, 1500);
+
         // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyASBvCTJbUNiYS6JzwYFpu_oKulrrG_5vM",
@@ -1138,18 +1147,10 @@
             updateOrderStats();
             syncSettingsInputs();
             setupRealtimeListeners();
-
-            setTimeout(() => {
-                const splash = document.getElementById('splash-screen');
-                if (splash) {
-                    splash.classList.add('opacity-0', 'pointer-events-none');
-                    setTimeout(() => splash.classList.add('hidden'), 400);
-                }
-            }, 1200);
         }
         window.onload = initApp;
 
-        /* ==================== TAB & BACK BUTTON NAVIGATION ==================== -->
+        /* ==================== TAB & BACK BUTTON NAVIGATION ==================== */
         window.switchTab = function(tab, pushHist = true) {
             if (pushHist && activeTab !== tab) {
                 tabHistory.push(tab);
@@ -1198,7 +1199,7 @@
             }
         };
 
-        /* ==================== PRODUCTS, WISHLIST & SEARCH ==================== -->
+        /* ==================== PRODUCTS, WISHLIST & SEARCH ==================== */
         function renderFlashSales() {
             const strip = document.getElementById('flash-sale-strip');
             if (!strip) return;
@@ -1327,7 +1328,7 @@
         };
         window.closeProductModal = function() { document.getElementById('product-detail-modal').classList.add('hidden'); };
 
-        /* ==================== VOUCHERS & DEALS ==================== -->
+        /* ==================== VOUCHERS & DEALS ==================== */
         function renderVouchers() {
             const container = document.getElementById('vouchers-list-container');
             const badgeCount = document.getElementById('deals-collected-count');
@@ -1404,7 +1405,7 @@
             showToast(`কোড কপি হয়েছে: ${code}`);
         };
 
-        /* ==================== REAL-TIME CUSTOMER <-> ADMIN CHAT ==================== -->
+        /* ==================== REAL-TIME CUSTOMER <-> ADMIN CHAT ==================== */
         function getCurrentCustomerThreadId() {
             if (CURRENT_USER) {
                 return CURRENT_USER.email || CURRENT_USER.phone || CURRENT_USER.id;
@@ -1669,7 +1670,7 @@
             }
         }
 
-        /* ==================== AUTHENTICATION & ACCOUNT ==================== -->
+        /* ==================== AUTHENTICATION & ACCOUNT ==================== */
         window.openAuthModal = function() { document.getElementById('auth-modal').classList.remove('hidden'); };
         window.closeAuthModal = function() { document.getElementById('auth-modal').classList.add('hidden'); };
 
@@ -1840,7 +1841,7 @@
             }
         }
 
-        /* ==================== SAVED ADDRESS & POLICY ==================== -->
+        /* ==================== SAVED ADDRESS & POLICY ==================== */
         window.openSavedAddressModal = function() {
             if (SAVED_ADDRESS) {
                 document.getElementById('addr-modal-city').value = SAVED_ADDRESS.city || 'Khulna';
@@ -1868,7 +1869,7 @@
         window.openStorePolicyModal = function() { document.getElementById('store-policy-modal').classList.remove('hidden'); };
         window.closeStorePolicyModal = function() { document.getElementById('store-policy-modal').classList.add('hidden'); };
 
-        /* ==================== CART & CHECKOUT ==================== -->
+        /* ==================== CART & CHECKOUT ==================== */
         window.addCurrentProductToCart = function() {
             if (!currentModalProduct) return;
             const item = cart.find(x => String(x.product.id) === String(currentModalProduct.id));
@@ -2107,7 +2108,7 @@
             openCustomerOrdersModal('All');
         };
 
-        /* ==================== ORDERS & ADMIN PANEL ==================== -->
+        /* ==================== ORDERS & ADMIN PANEL ==================== */
         function getUserOrders() {
             if (!CURRENT_USER) return [];
             const uEmail = (CURRENT_USER.email || '').toLowerCase();
@@ -2368,7 +2369,7 @@
             showToast('সেটিংস সংরক্ষিত হয়েছে!');
         };
 
-        /* ==================== PROFILE PICTURE MODAL ==================== -->
+        /* ==================== PROFILE PICTURE MODAL ==================== */
         let pendingAvatarData = '';
         window.openProfilePicModal = function() {
             if (!CURRENT_USER) return;
@@ -2533,4 +2534,4 @@
         };
     </script>
 </body>
-                </html>
+                    </html>
